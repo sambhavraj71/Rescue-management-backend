@@ -1,50 +1,64 @@
-const mongoose =
-require("mongoose");
+const SOS =
+require("../models/SOS");
 
-const sosSchema =
-new mongoose.Schema({
+exports.createSOS =
+async(req,res)=>{
 
-  userId:{
+  try {
 
-    type:
-    mongoose.Schema.Types.ObjectId,
+    const sos =
+    await SOS.create(req.body);
 
-    ref:"User",
+    res.status(201).json({
 
-    required:true
+      message:
+      "SOS Created",
 
-  },
+      sos
 
-  emergencyType:{
+    });
 
-    type:String,
+  } catch(error){
 
-    required:true
+    console.log(error);
 
-  },
+    res.status(500).json({
 
-  latitude:{
+      message:
+      "Server Error"
 
-    type:Number,
-
-    required:true
-
-  },
-
-  longitude:{
-
-    type:Number,
-
-    required:true
+    });
 
   }
 
-},{
-  timestamps:true
-});
+};
 
-module.exports =
-mongoose.model(
-  "SOS",
-  sosSchema
-);
+exports.getAllSOS =
+async(req,res)=>{
+
+  try {
+
+    const data =
+    await SOS.find()
+
+    .populate(
+      "userId",
+      "name email"
+    );
+
+    res.json(data);
+
+  } catch(error){
+
+    console.log(error);
+
+    res.status(500).json({
+
+      message:
+      "Server Error"
+
+    });
+
+  }
+
+};
