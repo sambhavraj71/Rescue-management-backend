@@ -1,5 +1,6 @@
 const express = require("express");
-
+const protect = require("../middleware/authMiddleware")
+const authorize = require("../middleware/roleMiddleware")
 const router = express.Router();
 
 const {
@@ -10,5 +11,12 @@ const {
 router.post("/register", registerUser);
 
 router.post("/login", loginUser);
+
+router.get(
+   "/all-sos",
+   protect,
+   authorize("admin"),
+   getAllSOS
+);
 
 module.exports = router;

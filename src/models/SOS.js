@@ -40,7 +40,17 @@ new mongoose.Schema({
   }
 
 },{
-  timestamps:true
+  timestamps:true,
+    status: {
+    type: String,
+    enum: ["pending", "assigned", "accepted", "completed"],
+    default: "pending",
+  },
+
+  assignedRescueTeam: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 module.exports =

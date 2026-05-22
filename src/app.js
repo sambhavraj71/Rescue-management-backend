@@ -10,6 +10,8 @@ require("./routes/authRoutes");
 const sosRoutes =
 require("./routes/sosRoutes");
 
+const rescueRoutes = require("./routes/rescueRoutes");
+
 const app =
 express();
 
@@ -27,4 +29,5 @@ app.use(
   sosRoutes
 );
 
+app.use("/api/rescue", rescueRoutes);
 module.exports = app;
