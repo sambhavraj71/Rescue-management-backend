@@ -1,60 +1,84 @@
-const mongoose =
-require("mongoose");
+const mongoose = require("mongoose");
 
-const sosSchema =
-new mongoose.Schema({
+const sosSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-  userId:{
+    emergencyType: {
+      type: String,
+      required: true,
+    },
 
-    type:
-    mongoose.Schema.Types.ObjectId,
+    latitude: {
+      type: Number,
+      required: true,
+    },
 
-    ref:"User",
+    longitude: {
+      type: Number,
+      required: true,
+    },
 
-    required:true
-
-  },
-
-  emergencyType:{
-
-    type:String,
-
-    required:true
-
-  },
-
-  latitude:{
-
-    type:Number,
-
-    required:true
-
-  },
-
-  longitude:{
-
-    type:Number,
-
-    required:true
-
-  }
-
-},{
-  timestamps:true,
     status: {
-    type: String,
-    enum: ["pending", "assigned", "accepted", "completed"],
-    default: "pending",
-  },
+      type: String,
+      enum: ["pending", "assigned", "accepted", "completed"],
+      default: "pending",
+    },
 
-  assignedRescueTeam: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-});
+    notes: {
+      type: String,
+      default: "",
+    },
 
-module.exports =
-mongoose.model(
-  "SOS",
-  sosSchema
+    imageUrl: {
+      type: String,
+      default: "",
+    },
+
+    voiceEmergency: {
+      type: Boolean,
+      default: false,
+    },
+
+    assignedRescueTeam: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    assignedRescueTeamName: {
+      type: String,
+      default: "",
+    },
+
+    statusHistory: [
+      {
+        status: {
+          type: String,
+          enum: ["pending", "assigned", "accepted", "completed"],
+          required: true,
+        },
+        note: {
+          type: String,
+          default: "",
+        },
+        updatedBy: {
+          type: String,
+          default: "system",
+        },
+        latitude: Number,
+        longitude: Number,
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
 );
+
+module.exports = mongoose.model("SOS", sosSchema);

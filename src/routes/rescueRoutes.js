@@ -1,19 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const protect = require("../middleware/authMiddleware");
-const authorize = require("../middleware/roleMiddleware");
+const {
+  getPendingSOS,
+  getMyActiveSOS,
+  acceptSOS,
+  updateRescueLocation,
+  completeSOS,
+  getRescueTeams,
+} = require("../controllers/rescueController");
 
-router.get(
-   "/dashboard",
-   protect,
-   authorize("rescue"),
-   (req,res)=>{
-      res.json({
-         success:true,
-         message:"Rescue Dashboard"
-      })
-   }
-);
+router.get("/pending", getPendingSOS);
+router.get("/my-active/:teamName", getMyActiveSOS);
+router.post("/accept/:id", acceptSOS);
+router.post("/location/:id", updateRescueLocation);
+router.post("/complete/:id", completeSOS);
+router.get("/teams", getRescueTeams);
 
 module.exports = router;

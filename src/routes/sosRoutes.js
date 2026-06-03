@@ -7,7 +7,10 @@ express.Router();
 const {
 
   createSOS,
-  getAllSOS
+  getAllSOS,
+  getUserSOS,
+  updateSOSStatus,
+  getSOSAnalytics
 
 } = require(
 "../controllers/sosController"
@@ -27,6 +30,21 @@ router.post(
 router.get(
   "/all",
   getAllSOS
+);
+
+router.get(
+  "/user/:userId",
+  getUserSOS
+);
+
+router.get(
+  "/analytics/summary",
+  getSOSAnalytics
+);
+
+router.patch(
+  "/:id/status",
+  updateSOSStatus
 );
 
 

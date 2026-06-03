@@ -20,6 +20,8 @@ const io = require("socket.io")(server, {
   },
 });
 
+app.set("io", io);
+
 // Socket Connection
 io.on("connection", (socket) => {
 
