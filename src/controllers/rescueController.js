@@ -13,15 +13,16 @@ exports.getPendingSOS = async (req, res) => {
   }
 };
 
-// GET accepted SOS by rescue team name
+// GET all SOS by rescue team name (active + completed)
 exports.getMyActiveSOS = async (req, res) => {
   try {
     const { teamName } = req.params;
     const data = await SOS.find({
       assignedRescueTeamName: teamName,
-      status: { $in: ["assigned", "accepted"] },
+      status: { $in: ["assigned", "accepted", "completed"] },
     })
       .sort({ createdAt: -1 })
+      .limit(50)
       .populate("userId", "name email");
     res.json(data);
   } catch (error) {
