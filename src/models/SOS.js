@@ -54,6 +54,8 @@ const sosSchema = new mongoose.Schema(
       default: "",
     },
 
+    isFalseAlarm: { type: Boolean, default: false },
+
     statusHistory: [
       {
         status: {

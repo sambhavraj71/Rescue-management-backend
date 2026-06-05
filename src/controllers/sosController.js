@@ -1,4 +1,6 @@
 const SOS = require("../models/SOS");
+const User = require("../models/User");
+const sendPush = require("../utils/sendPush");
 
 const VALID_STATUS = ["pending", "assigned", "accepted", "completed"];
 
@@ -47,6 +49,19 @@ exports.createSOS = async (req, res) => {
       io.emit("sosCreated", populatedSOS);
       io.emit("sosUpdated", populatedSOS);
     }
+
+    // Notify all rescue team members
+    const rescueUsers = await User.find({ role: { $in: ["rescue", "admin"] }, expoPushToken: { $ne: "" } });
+    await Promise.all(
+      rescueUsers.map((r) =>
+        sendPush(
+          r.expoPushToken,
+          "🚨 New SOS Alert",
+          `${emergencyType} emergency reported nearby`,
+          { sosId: sos._id.toString() }
+        )
+      )
+    );
 
     res.status(201).json({
       message: "SOS Created",
@@ -141,6 +156,13 @@ exports.updateSOSStatus = async (req, res) => {
     if (io) {
       io.emit("sosStatusUpdated", updatedSOS);
       io.emit("sosUpdated", updatedSOS);
+    }
+
+    // Notify the SOS owner
+    const sosUser = await User.findById(updatedSOS.userId?._id || updatedSOS.userId);
+    if (sosUser?.expoPushToken) {
+      const statusMsg = { assigned: "A rescue team has been assigned", accepted: "Rescue team is on the way!", completed: "Your case has been resolved" };
+      await sendPush(sosUser.expoPushToken, "🚨 SOS Update", statusMsg[status] || `Status: ${status}`, { sosId: id });
     }
 
     res.json({ message: "Status updated", sos: updatedSOS });
