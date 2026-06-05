@@ -6,7 +6,7 @@ exports.getPendingSOS = async (req, res) => {
   try {
     const data = await SOS.find({ status: { $in: ["pending", "assigned"] } })
       .sort({ createdAt: -1 })
-      .populate("userId", "name email");
+      .populate("userId", "name email medicalProfile emergencyContacts");
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
@@ -23,7 +23,7 @@ exports.getMyActiveSOS = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .limit(50)
-      .populate("userId", "name email");
+      .populate("userId", "name email medicalProfile emergencyContacts");
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
